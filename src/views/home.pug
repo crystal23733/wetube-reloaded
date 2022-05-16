@@ -1,6 +1,10 @@
 extends base
 include mixins/video
 block content
+    nav 
+        ul 
+            li 
+                a(href="/video/upload") Upload video
     h2 Welcome here you will see the trending videos
     each potato in videos
         +video(potato)
