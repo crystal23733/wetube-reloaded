@@ -1,10 +1,6 @@
 extends base
 include mixins/video
 block content
-    nav 
-        ul 
-            li 
-                a(href="/video/upload") Upload video
     each video in videos
         +video(video)
     else 
