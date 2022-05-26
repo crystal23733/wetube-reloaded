@@ -59,8 +59,15 @@ export const postUpload = async (req, res) => {
     return res.render("upload", {pageTitle : "Upload video", errorMessage: error._message,});
   }
 };
-export const search = (req, res) => res.send("Search");
-export const deleteVideo = (req, res) => {
-    console.log(req.params);
-    return res.send("Delete Video");
+export const deleteVideo = async (req, res) => {
+  const { id } = req.params;
+  await Video.findByIdAndDelete(id);
+  return res.redirect("/");
 }
+export const search = (req, res) => {
+  const { keyword } = req.query;
+  if(keyword){
+    ///
+  };
+  return res.render("search", {pageTitle : "Search"});
+};
