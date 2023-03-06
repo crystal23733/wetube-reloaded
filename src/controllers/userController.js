@@ -2,6 +2,7 @@ import User from "../models/User";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 import { token } from "morgan";
+import { render } from "pug";
 
 
 export const getJoin = (req, res) => {
@@ -104,24 +105,24 @@ export const finishGithubLogin = async (req, res) => {
         if(!emailObj){
             return res.redirect("/login");
         }
-        let user = await User.findOne({email : emailObj.email});
-        if(!user){
+        let user = await User.findOne({ email: emailObj.email });
+        if (!user) {
             user = await User.create({
-                avatarUrl: userData.avatar_url,
-                name: userData.name,
-                username: userData.login,
-                email: emailObj.email,
-                password: "",
-                socialOnly: true,
-                location: userData.location,
-            });
-            req.session.loggedIn = true;
-            req.session.user = user;
-            return res.redirect("/");
-        }
+            avatarUrl: userData.avatar_url,
+            name: userData.name,
+            username: userData.login,
+            email: emailObj.email,
+            password: "",
+            socialOnly: true,
+            location: userData.location,
+        });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
     } else {
         return res.redirect("/login");
-    }
+  }
 };
 
 export const logout = (req, res) => {
@@ -129,7 +130,12 @@ export const logout = (req, res) => {
     return res.redirect("/");
 };
 
-export const edit = (req, res) => res.send("Edit User");
+export const getEdit = (req, res) => {
+    return res.render("edit-profile", {pageTitle: "Edit profile"});
+}
+export const postEdit = (req, res) => {
+    return res.render("edit-profile");
+}
 export const see = (req, res) => {
     console.log(req.params);
     return res.send("See User");
