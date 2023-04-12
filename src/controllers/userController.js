@@ -141,24 +141,48 @@ export const postEdit = async(req, res) => {
         },
         body: {name, email, username, location},
     } = req;
-    const usernameExists = await User.find({username});
-    const emailExists = await User.find({email});
-    if(usernameExists._id === _id){
-        return res.status(400).render("edit-profile", {pageTitle, errorMessage:"닉네임을 다른사람이 사용중입니다."});
-    } else if(emailExists._id === _id){
-        return res.status(400).render("edit-profile", {pageTitle, errorMessage:"이메일을 다른사람이 사용중입니다."});
-    }else {
-        const updateUser = await User.findByIdAndUpdate(_id, {
+    const usernameExists = await User.exists({username});
+    const emailExists = await User.exists({email});
+    if(!usernameExists || !emailExists){
+        const userUpdate = await User.findByIdAndUpdate(_id, {
             name,
-            email,
             username,
+            email,
             location,
         },
-        {new:true});
-        req.session.user = updateUser;
+        {new: true});
+        req.session.user = userUpdate;
         return res.redirect("/users/edit");
+    } else {
+        return res.status(400).render("edit-profile", {pageTitle, errorMessage:"이미 사용중인 사용자 이름이거나 이메일입니다."});
     }
 }
+export const getChangePassword = (req, res) => {
+    return res.render("users/change-password", {pageTitle:"Change Password"});
+}
+
+export const postChangePassword = async (req, res) => {
+    const pageTitle = "Change Password";
+    const {
+        session: {
+            user: {_id, password},
+        }, 
+        body:{oldPassword, newPassword, newPasswordConfirm}
+    } = req;
+    const user = await User.findById(_id);
+    const ok = await bcrypt.compare(oldPassword, user.password);
+    if(!ok){
+        return res.status(400).render("users/change-password", {pageTitle, errorMessage:"사용중인 비밀번호가 일치하지 않습니다."});
+    }
+    if(newPassword !== newPasswordConfirm){
+        return res.status(400).render("users/change-password", {pageTitle, errorMessage:"새로운 비밀번호가 일치하지 않습니다."});
+    }
+    user.password = newPassword;
+    await user.save();
+    req.session.destroy();
+    return res.redirect('/login');
+}
+
 export const see = (req, res) => {
     console.log(req.params);
     return res.send("See User");
