@@ -1,8 +1,6 @@
 import User from "../models/User";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
-import { token } from "morgan";
-import { render } from "pug";
 
 
 export const getJoin = (req, res) => {
@@ -137,14 +135,17 @@ export const postEdit = async(req, res) => {
     const pageTitle = "Edit profile";
     const {
         session:{
-            user:{_id},
+            user:{_id, avatarUrl},
         },
         body: {name, email, username, location},
+        file,
     } = req;
+    console.log(file);
     const usernameExists = await User.exists({username});
     const emailExists = await User.exists({email});
     if(!usernameExists || !emailExists){
         const userUpdate = await User.findByIdAndUpdate(_id, {
+            avatarUrl: file ? file.path : avatarUrl,
             name,
             username,
             email,
