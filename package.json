@@ -8,8 +8,8 @@
     "url": "git+https://github.com/crystal23733/wetube-reloaded.git"
   },
   "scripts": {
-    "dev": "nodemon --exec babel-node src/init.js",
-    "assets": "webpack --config webpack.config.js"
+    "server:dev": "nodemon",
+    "server:assets": "webpack"
   },
   "author": "hoyeong Yoo<crystal_237@naver.com>",
   "license": "MIT",
