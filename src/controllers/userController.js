@@ -166,12 +166,10 @@ export const postEdit = async (req, res) => {
     req.session.user = userUpdate;
     return res.redirect("/users/edit");
   } else {
-    return res
-      .status(400)
-      .render("edit-profile", {
-        pageTitle,
-        errorMessage: "이미 사용중인 사용자 이름이거나 이메일입니다.",
-      });
+    return res.status(400).render("edit-profile", {
+      pageTitle,
+      errorMessage: "이미 사용중인 사용자 이름이거나 이메일입니다.",
+    });
   }
 };
 export const getChangePassword = (req, res) => {
@@ -189,20 +187,16 @@ export const postChangePassword = async (req, res) => {
   const user = await User.findById(_id);
   const ok = await bcrypt.compare(oldPassword, user.password);
   if (!ok) {
-    return res
-      .status(400)
-      .render("users/change-password", {
-        pageTitle,
-        errorMessage: "사용중인 비밀번호가 일치하지 않습니다.",
-      });
+    return res.status(400).render("users/change-password", {
+      pageTitle,
+      errorMessage: "사용중인 비밀번호가 일치하지 않습니다.",
+    });
   }
   if (newPassword !== newPasswordConfirm) {
-    return res
-      .status(400)
-      .render("users/change-password", {
-        pageTitle,
-        errorMessage: "새로운 비밀번호가 일치하지 않습니다.",
-      });
+    return res.status(400).render("users/change-password", {
+      pageTitle,
+      errorMessage: "새로운 비밀번호가 일치하지 않습니다.",
+    });
   }
   user.password = newPassword;
   await user.save();
@@ -212,7 +206,13 @@ export const postChangePassword = async (req, res) => {
 
 export const see = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id).populate("videos");
+  const user = await User.findById(id).populate({
+    path: "videos",
+    populate: {
+      path: "owner",
+      model: "User",
+    },
+  });
   console.log(user);
   if (!user) {
     return res.status(404).render("404", { pageTitle: "User not found." });
