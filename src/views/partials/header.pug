@@ -8,13 +8,17 @@ header
                     i.fas.fa-search
             if loggedIn
                 li 
-                    a(href="/video/upload") Upload video
+                    a(href="/videos/upload") Upload video
                 li 
                     a(href="/users/edit") Edit profile
                 li 
-                    a(href=`/users/${loggedInUser._id}`) My Profile
-                li 
                     a(href="/users/logout") Log out
+                li 
+                    a(href=`/users/${loggedInUser._id}`)
+                        if loggedInUser.avatarUrl === ""
+                            span 😀
+                        else 
+                            img.header__avatar(src="/" + loggedInUser.avatarUrl)
             else
                 li 
                     a(href="/login") Login
