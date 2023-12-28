@@ -30,6 +30,12 @@ block content
             form.video__comments-form#commentForm
                 textarea(cols="30", rows="10", placeholder="댓글을 달아주세요.")
                 button 댓글 달기
+    div.video__comments
+        ul 
+            each comment in video.comments.reverse()
+                li.video__comment 
+                    i.fas.fa-comment
+                    |  #{comment.text}
 block scripts
     script(src="/static/js/videoPlayer.js") 
     if loggedIn
