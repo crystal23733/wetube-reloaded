@@ -31,5 +31,10 @@
     background-color: white;
     color: black;
     margin-bottom: 10px;
+    position: relative;
+    .fa-trash {
+      position: absolute;
+      right: 10px;
+    }
   }
 }
