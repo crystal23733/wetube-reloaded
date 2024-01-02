@@ -39,7 +39,8 @@ block content
                 li.video__comment(data-id=comment.id) 
                     i.fas.fa-comment
                     span  #{comment.text}
-                    i.fas.fa-trash
+                    if String(comment.id) === String(loggedInUser._id)
+                        i.fas.fa-trash
 block scripts
     script(src="/static/js/videoPlayer.js") 
     if loggedIn
